@@ -1,0 +1,593 @@
+#!/bin/sh
+NIKOROOT_DIR="$HOME/NikoR00t"
+mkdir -p "$NIKOROOT_DIR"
+# NikoRootDistro - multi-OS emulator for iSH
+
+CURRENT_OS=""
+CURRENT_DISPLAY=""
+CURRENT_USER="user"
+CURRENT_HOST="localhost"
+
+GREEN='\033[1;32m'
+CYAN='\033[1;36m'
+WHITE='\033[1;37m'
+GREY='\033[0;37m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+set_display_name() {
+    case "$CURRENT_OS" in
+        mint) CURRENT_DISPLAY="Linux Mint" ;;
+        fedora) CURRENT_DISPLAY="Fedora" ;;
+        arch) CURRENT_DISPLAY="Arch Linux" ;;
+        artix) CURRENT_DISPLAY="Artix Linux" ;;
+        debian) CURRENT_DISPLAY="Debian" ;;
+        ubuntu) CURRENT_DISPLAY="Ubuntu" ;;
+        slackware) CURRENT_DISPLAY="Slackware" ;;
+        kali) CURRENT_DISPLAY="Kali Linux" ;;
+        manjaro) CURRENT_DISPLAY="Manjaro" ;;
+        centos) CURRENT_DISPLAY="CentOS" ;;
+        opensuse) CURRENT_DISPLAY="openSUSE" ;;
+        alpine) CURRENT_DISPLAY="Alpine Linux" ;;
+        gentoo) CURRENT_DISPLAY="Gentoo" ;;
+        void) CURRENT_DISPLAY="Void Linux" ;;
+        nixos) CURRENT_DISPLAY="NixOS" ;;
+        popos) CURRENT_DISPLAY="Pop!_OS" ;;
+        elementary) CURRENT_DISPLAY="elementary OS" ;;
+        zorin) CURRENT_DISPLAY="Zorin OS" ;;
+        mxlinux) CURRENT_DISPLAY="MX Linux" ;;
+        parrot) CURRENT_DISPLAY="Parrot OS" ;;
+        deepin) CURRENT_DISPLAY="Deepin" ;;
+        garuda) CURRENT_DISPLAY="Garuda Linux" ;;
+        endeavouros) CURRENT_DISPLAY="EndeavourOS" ;;
+        cachyos) CURRENT_DISPLAY="CachyOS" ;;
+        nobara) CURRENT_DISPLAY="Nobara" ;;
+        rocky) CURRENT_DISPLAY="Rocky Linux" ;;
+        alma) CURRENT_DISPLAY="AlmaLinux" ;;
+        oracle) CURRENT_DISPLAY="Oracle Linux" ;;
+        rhel) CURRENT_DISPLAY="Red Hat Enterprise Linux" ;;
+        devuan) CURRENT_DISPLAY="Devuan" ;;
+        antix) CURRENT_DISPLAY="antiX" ;;
+        puppy) CURRENT_DISPLAY="Puppy Linux" ;;
+        tinycore) CURRENT_DISPLAY="Tiny Core Linux" ;;
+        archbang) CURRENT_DISPLAY="ArchBang" ;;
+        blackarch) CURRENT_DISPLAY="BlackArch" ;;
+        *) CURRENT_DISPLAY="$CURRENT_OS" ;;
+    esac
+}
+
+distro_ascii() {
+    case "$CURRENT_OS" in
+        arch|artix|cachyos|archbang|blackarch) neofetch --ascii_distro arch ;;
+        mint) neofetch --ascii_distro mint ;;
+        fedora|nobara) neofetch --ascii_distro fedora ;;
+        debian) neofetch --ascii_distro debian ;;
+        ubuntu) neofetch --ascii_distro ubuntu ;;
+        slackware) neofetch --ascii_distro slackware ;;
+        kali) neofetch --ascii_distro kali ;;
+        manjaro) neofetch --ascii_distro manjaro ;;
+        centos|rocky|alma|oracle) neofetch --ascii_distro centos ;;
+        opensuse) neofetch --ascii_distro opensuse ;;
+        alpine) neofetch --ascii_distro alpine ;;
+        gentoo) neofetch --ascii_distro gentoo ;;
+        void) neofetch --ascii_distro void ;;
+        nixos) neofetch --ascii_distro nixos ;;
+        popos) neofetch --ascii_distro pop ;;
+        elementary) neofetch --ascii_distro elementary ;;
+        zorin) neofetch --ascii_distro zorin ;;
+        mxlinux) neofetch --ascii_distro mx ;;
+        parrot) neofetch --ascii_distro parrot ;;
+        deepin) neofetch --ascii_distro deepin ;;
+        garuda) neofetch --ascii_distro garuda ;;
+        endeavouros) neofetch --ascii_distro endeavouros ;;
+        rhel) neofetch --ascii_distro redhat ;;
+        devuan) neofetch --ascii_distro devuan ;;
+        antix) neofetch --ascii_distro antix ;;
+        puppy) neofetch --ascii_distro puppy ;;
+        tinycore) neofetch --ascii_distro tinycore ;;
+        *) neofetch --ascii_distro arch ;;
+    esac
+}
+
+show_neofetch() {
+    set_display_name
+    distro_ascii | sed "s/Alpine Linux/$CURRENT_DISPLAY/"
+}
+
+spinfetch() {
+    set_display_name
+    i=0
+    # получаем ASCII текущей ОС БЕЗ первой строки с инфой
+    ascii=$(distro_ascii 2>/dev/null | sed 's/Alpine Linux/'"$CURRENT_DISPLAY"'/')
+    while [ $i -lt 30 ]; do
+        clear
+        case $((i % 4)) in
+            0) echo "         ◢   ◣" ;;
+            1) echo "         ◤   ◥" ;;
+            2) echo "         ◥   ◤" ;;
+            3) echo "         ◣   ◢" ;;
+        esac
+        echo ""
+        echo "$ascii"
+        echo ""
+        i=$((i + 1))
+        sleep 0.2
+    done
+    clear
+}
+
+rnd_sleep() {
+    n=$((RANDOM % 8 + 2))
+    sleep 0.$n
+}
+
+maybe_freeze() {
+    r=$((RANDOM % 100))
+    if [ $r -lt 15 ]; then
+        printf "[ .... ] A start job is running for Wait for Network ("
+        printf "%ds / 1min 30s)" $((RANDOM % 10 + 3))
+        sleep $((RANDOM % 3 + 2))
+        printf "\r${GREEN}[  OK  ]${RESET} Finished Wait for Network.\n"
+    fi
+}
+
+boot_log() {
+    set_display_name
+    clear
+    echo "Loading NikoRootDistro kernel..."
+    rnd_sleep
+    echo ""
+    echo "[    0.000000] Linux version 6.6.0-nikoroot (root@nikoroot) (gcc 13.2.0)"
+    rnd_sleep
+    echo "[    0.000000] Command line: BOOT_IMAGE=/vmlinuz root=/dev/sda1 ro quiet"
+    rnd_sleep
+    echo "[    0.012345] BIOS-provided physical RAM map:"
+    rnd_sleep
+    echo "[    0.023456] RAMDISK: [mem 0x7f000000-0x7fffffff]"
+    rnd_sleep
+    echo "[    0.034567] ACPI: Core revision 20230628"
+    rnd_sleep
+    echo "[    0.045678] CPU0: Intel(R) Core(TM) i7 @ 2.60GHz"
+    rnd_sleep
+    echo "[    0.056789] Memory: 8192000K/8192000K available"
+    rnd_sleep
+    echo "[    0.067890] devtmpfs: initialized"
+    rnd_sleep
+    echo "[    0.078901] clocksource: jiffies: mask: 0xffffffff"
+    rnd_sleep
+    echo "[    0.089012] NET: Registered PF_INET protocol family"
+    rnd_sleep
+    echo "[    0.090123] TCP established hash table entries: 32768"
+    rnd_sleep
+    echo "[    0.101234] systemd[1]: systemd 254.5 running in system mode"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Created slice System Slice.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Created slice User and Session Slice.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Slices.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Mounted Huge Pages File System.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Mounted POSIX Message Queue File System.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Mounted Kernel Debug File System.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Mounted Kernel Trace File System.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Dispatch Password Requests.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Local Encrypted Volumes.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Forward Password Requests to Wall.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Paths.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Listening on udev Control Socket.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Listening on udev Kernel Socket.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Listening on D-Bus System Message Bus Socket.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Sockets.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Journal Service.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started udev Kernel Device Manager.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Rule-based Manager for Devices.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Found device /dev/sda1.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Load Kernel Modules.\n"
+    rnd_sleep
+    maybe_freeze
+    printf "${GREEN}[  OK  ]${RESET} Started Apply Kernel Variables.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Local File Systems.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Remount Root and Kernel File Systems.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Flush Journal to Persistent Storage.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Create Static Device Nodes in /dev.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Local File Systems (Pre).\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Containers.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Network Manager.\n"
+    rnd_sleep
+    maybe_freeze
+    printf "${GREEN}[  OK  ]${RESET} Reached target Network.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started D-Bus System Message Bus.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Avahi mDNS/DNS-SD Stack.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started WPA supplicant.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Network is Online.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Login Service.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started User Login Management.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started Authorization Manager.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Reached target Multi-User System.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started GNOME Display Manager.\n"
+    rnd_sleep
+    printf "${GREEN}[  OK  ]${RESET} Started NikoRoot Desktop Environment.\n"
+    rnd_sleep
+    echo ""
+    echo "NikoRootDistro 1.0  $CURRENT_DISPLAY  tty1"
+    rnd_sleep
+    echo "Welcome to $CURRENT_DISPLAY"
+    echo ""
+    sleep 1
+    clear
+}
+
+pkg_install() {
+    pkg="$1"
+    if [ -z "$pkg" ]; then
+        echo "error: no targets specified"
+        return 1
+    fi
+    printf "Proceed? [Y/n] "
+    read -r ans
+    case "$ans" in
+        n|N|no|NO) echo "Aborted."; return 1 ;;
+    esac
+    printf "Proceed? [Y/n] "
+    read -r ans
+    case "$ans" in
+        n|N|no|NO) echo "Aborted."; return 1 ;;
+    esac
+    out=$(apk add "$pkg" 2>&1)
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        echo "error: package '$pkg' not found"
+        return 1
+    fi
+    case "$CURRENT_OS" in
+        mint|ubuntu|debian|kali|popos|elementary|zorin|mxlinux|parrot|deepin|devuan|antix)
+            echo "Reading package lists... Done"
+            echo "Building dependency tree... Done"
+            echo "Setting up $pkg ..."
+            ;;
+        fedora|centos|rocky|alma|oracle|rhel|nobara)
+            echo "Dependencies resolved."
+            echo "Installing : $pkg"
+            echo "Complete!"
+            ;;
+        arch|artix|manjaro|garuda|endeavouros|cachyos|archbang|blackarch)
+            echo "resolving dependencies..."
+            echo "(1/1) installing $pkg"
+            ;;
+        slackware)
+            echo "Installing package $pkg ..."
+            echo "Done."
+            ;;
+        opensuse)
+            echo "Loading repository data..."
+            echo "Installing: $pkg"
+            ;;
+        gentoo)
+            echo ">>> Emerging (1 of 1) $pkg"
+            ;;
+        void)
+            echo "Installing $pkg ..."
+            echo "Done."
+            ;;
+        nixos)
+            echo "building '$pkg'..."
+            echo "Done."
+            ;;
+        alpine)
+            echo "(1/1) Installing $pkg"
+            ;;
+    esac
+    echo "$out" | tail -1
+}
+
+pkg_remove() {
+    pkg="$1"
+    if [ -z "$pkg" ]; then
+        echo "error: no targets specified"
+        return 1
+    fi
+    out=$(apk del "$pkg" 2>&1)
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        echo "error: package '$pkg' not installed"
+        return 1
+    fi
+    echo "Removing $pkg ..."
+    echo "$out" | tail -1
+}
+
+help_show() {
+    clear
+    printf "${BOLD}NikoRootDistro${RESET}, OS: ${CYAN}$CURRENT_DISPLAY${RESET}\n"
+    echo ""
+    echo "  neofetch          show OS logo"
+    echo "  spinfetch         spinning logo animation"
+    echo "  switch            change OS"
+    echo "  help              this help"
+    echo "  whoami            current user"
+    echo "  uname -a          fake kernel"
+    echo "  cat /etc/os-release"
+    echo "  ls, pwd, date"
+    echo "  clear, exit"
+    echo ""
+    echo "  apt/dnf/pacman/slackpkg/zypper/emerge/xbps-install/nix-env/apk"
+    echo ""
+}
+
+os_release() {
+    echo "NAME=\"$CURRENT_DISPLAY\""
+    echo "VERSION=\"1.0 (NikoRoot)\""
+    echo "ID=$CURRENT_OS"
+    echo "PRETTY_NAME=\"$CURRENT_DISPLAY\""
+    echo "HOME_URL=\"https://nikoroot.local\""
+}
+
+choose_os() {
+    clear
+    printf "${BOLD}================================${RESET}\n"
+    printf "${BOLD}     NikoRootDistro v1.0${RESET}\n"
+    printf "${BOLD}================================${RESET}\n"
+    echo ""
+    echo "  Select OS to boot:"
+    echo ""
+    echo "   1) Linux Mint        12) Alpine"
+    echo "   2) Fedora            13) Gentoo"
+    echo "   3) Arch Linux        14) Void Linux"
+    echo "   4) Artix Linux       15) NixOS"
+    echo "   5) Debian            16) Pop!_OS"
+    echo "   6) Ubuntu            17) elementary OS"
+    echo "   7) Slackware         18) Zorin OS"
+    echo "   8) Kali Linux        19) MX Linux"
+    echo "   9) Manjaro           20) Parrot OS"
+    echo "  10) CentOS            21) Deepin"
+    echo "  11) openSUSE          22) Garuda Linux"
+    echo "  23) EndeavourOS       27) AlmaLinux"
+    echo "  24) CachyOS           28) Oracle Linux"
+    echo "  25) Nobara            29) RHEL"
+    echo "  26) Rocky Linux       30) Devuan"
+    echo "  31) antiX             34) ArchBang"
+    echo "  32) Puppy Linux       35) BlackArch"
+    echo "  33) Tiny Core Linux"
+    echo "   0) Exit"
+    echo ""
+    printf "  Choice: "
+    read -r c
+    case "$c" in
+        1) CURRENT_OS="mint" ;;
+        2) CURRENT_OS="fedora" ;;
+        3) CURRENT_OS="arch" ;;
+        4) CURRENT_OS="artix" ;;
+        5) CURRENT_OS="debian" ;;
+        6) CURRENT_OS="ubuntu" ;;
+        7) CURRENT_OS="slackware" ;;
+        8) CURRENT_OS="kali" ;;
+        9) CURRENT_OS="manjaro" ;;
+        10) CURRENT_OS="centos" ;;
+        11) CURRENT_OS="opensuse" ;;
+        12) CURRENT_OS="alpine" ;;
+        13) CURRENT_OS="gentoo" ;;
+        14) CURRENT_OS="void" ;;
+        15) CURRENT_OS="nixos" ;;
+        16) CURRENT_OS="popos" ;;
+        17) CURRENT_OS="elementary" ;;
+        18) CURRENT_OS="zorin" ;;
+        19) CURRENT_OS="mxlinux" ;;
+        20) CURRENT_OS="parrot" ;;
+        21) CURRENT_OS="deepin" ;;
+        22) CURRENT_OS="garuda" ;;
+        23) CURRENT_OS="endeavouros" ;;
+        24) CURRENT_OS="cachyos" ;;
+        25) CURRENT_OS="nobara" ;;
+        26) CURRENT_OS="rocky" ;;
+        27) CURRENT_OS="alma" ;;
+        28) CURRENT_OS="oracle" ;;
+        29) CURRENT_OS="rhel" ;;
+        30) CURRENT_OS="devuan" ;;
+        31) CURRENT_OS="antix" ;;
+        32) CURRENT_OS="puppy" ;;
+        33) CURRENT_OS="tinycore" ;;
+        34) CURRENT_OS="archbang" ;;
+        35) CURRENT_OS="blackarch" ;;
+        0) echo "bye"; exit 0 ;;
+        *) echo "Invalid choice: $c"; sleep 1; return 1 ;;
+    esac
+    echo ""
+    echo "${BOLD}Made by @mat3l0rdfan (TikTok)${RESET}"
+    sleep 1
+    boot_log
+    return 0
+}
+
+prompt() {
+    printf "${WHITE}%s@%s${RESET}:${CYAN}~${RESET}\$ " "$CURRENT_USER" "$CURRENT_HOST"
+}
+
+switch_os() {
+    choose_os
+    clear
+}
+
+main_loop() {
+    while true; do
+        prompt
+        read -r cmd args
+        case "$cmd" in
+            apt|dnf|slackpkg|zypper)
+                sub=$(echo "$args" | awk '{print $1}')
+                pkg=$(echo "$args" | cut -d' ' -f2)
+                case "$sub" in
+                    install|in) pkg_install "$pkg" ;;
+                    remove|rm)  pkg_remove "$pkg" ;;
+                    *)          echo "usage: $cmd install|remove <pkg>" ;;
+                esac
+                ;;
+            pacman)
+                flag=$(echo "$args" | awk '{print $1}')
+                pkg=$(echo "$args" | cut -d' ' -f2)
+                case "$flag" in
+                    -S) pkg_install "$pkg" ;;
+                    -R) pkg_remove "$pkg" ;;
+                    *)  echo "usage: pacman -S|-R <pkg>" ;;
+                esac
+                ;;
+            emerge) pkg_install "$(echo "$args" | awk '{print $1}')" ;;
+            xbps-install)
+                flag=$(echo "$args" | awk '{print $1}')
+                pkg=$(echo "$args" | cut -d' ' -f2)
+                case "$flag" in
+                    -y) pkg_install "$pkg" ;;
+                    *)  pkg_install "$flag" ;;
+                esac
+                ;;
+            nix-env)
+                flag=$(echo "$args" | awk '{print $1}')
+                pkg=$(echo "$args" | cut -d' ' -f2)
+                case "$flag" in
+                    -i) pkg_install "$pkg" ;;
+                    *)  echo "usage: nix-env -i <pkg>" ;;
+                esac
+                ;;
+            apk)
+                sub=$(echo "$args" | awk '{print $1}')
+                pkg=$(echo "$args" | cut -d' ' -f2)
+                case "$sub" in
+                    add) pkg_install "$pkg" ;;
+                    del) pkg_remove "$pkg" ;;
+                    *)   echo "usage: apk add|del <pkg>" ;;
+                esac
+                ;;
+            neofetch) show_neofetch ;;
+            firefox) firefox_browser ;;
+            archinstall) archinstall_run ;;
+            switch)   switch_os ;;
+            help)     help_show ;;
+            whoami)   echo "$CURRENT_USER" ;;
+            uname)
+                echo "Linux $CURRENT_HOST 6.6.0-nikoroot #1 SMP x86_64 GNU/Linux"
+                ;;
+            cat)
+                if [ "$args" = "/etc/os-release" ]; then
+                    os_release
+                else
+                    echo "cat: $args: No such file or directory"
+                fi
+                ;;
+            ls)       ls ;;
+            pwd)      pwd ;;
+            date)     date ;;
+            clear)    clear ;;
+            exit|quit) echo "bye"; exit 0 ;;
+            "")       ;;
+            *)        echo "$cmd: command not found" ;;
+        esac
+    done
+}
+
+while ! choose_os; do :; done
+main_loop
+
+firefox_browser() {
+    while true; do
+        printf "${BOLD}firefox>${RESET} "
+        read -r query
+        case "$query" in
+            ""|exit|quit) echo "closing firefox..."; return ;;
+            clear) clear ;;
+            help) echo "Type search query or: exit" ;;
+            *)
+                echo ""
+                echo "  Searching for: $query"
+                sleep 0.4
+                echo "  --------------------------------"
+                echo "  1. $query - Wikipedia"
+                echo "  2. $query - YouTube"
+                echo "  3. $query - GitHub"
+                echo "  4. $query - Reddit"
+                echo "  --------------------------------"
+                echo "  (simulated results)"
+                echo ""
+                ;;
+        esac
+    done
+}
+
+
+archinstall_run() {
+    case "$CURRENT_OS" in
+        arch|artix|manjaro|garuda|endeavouros|cachyos|archbang|blackarch) ;;
+        *) echo "archinstall: command not found"; return 1 ;;
+    esac
+    echo "Welcome to archinstall 2.7.1"
+    sleep 0.5
+    echo ""
+    echo "  Select language:"
+    echo "   1) English"
+    echo "   2) Russian"
+    printf "  > "; read -r _
+    echo ""
+    echo "  Select mirror region:"
+    echo "   1) Worldwide"
+    echo "   2) Russia"
+    printf "  > "; read -r _
+    echo ""
+    echo "  Select disk:"
+    echo "   1) /dev/sda (20 GiB)"
+    printf "  > "; read -r _
+    echo ""
+    printf "  Proceed with installation? [y/N]: "
+    read -r ans
+    case "$ans" in
+        y|Y)
+            echo ""
+            echo "  Installing base system..."; sleep 1
+            echo "  Installing kernel..."; sleep 1
+            echo "  Installing bootloader..."; sleep 1
+            echo "  Creating user..."; sleep 1
+            echo ""
+            echo "  Installation complete!"
+            echo "  Rebooting in 3..."
+            sleep 1
+            echo "  2..."
+            sleep 1
+            echo "  1..."
+            sleep 1
+            clear
+            echo "Welcome to Arch Linux"
+            echo ""
+            ;;
+        *) echo "  Cancelled." ;;
+    esac
+}
